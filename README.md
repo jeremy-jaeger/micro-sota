@@ -8,9 +8,9 @@ The lowest-parameter (and lowest on-disk footprint) model that still exceeds **9
 <!-- ACCURACY_BADGE:END -->
 [![threshold](https://img.shields.io/badge/threshold-90%25-0f172a)](metrics.json)
 [![license](https://img.shields.io/badge/license-MIT-informational)](LICENSE)
-[![author](https://img.shields.io/badge/author-jeremyjhotdog-0f172a)](LICENSE)
+[![author](https://img.shields.io/badge/author-jeremy--jaeger-0f172a)](https://github.com/jeremy-jaeger)
 
-**Author:** [jeremyjhotdog](mailto:jeremyjhotdog@gmail.com) (sole author).
+**Author:** [Jeremy Jaeger](https://github.com/jeremy-jaeger) (sole author).
 
 This repository **establishes** that claim with trainable candidates, and **continuously verifies** it: a seed-controlled evaluation harness loads the champion weights, runs the official GLUE SST-2 validation split, and fails CI if accuracy falls below 90%.
 
@@ -142,9 +142,9 @@ Socher, R., et al. (2013). Recursive Deep Models for Semantic Compositionality
 Over a Sentiment Treebank. EMNLP.
 Wang, A., et al. (2018). GLUE: A Multi-Task Benchmark and Analysis Platform
 for Natural Language Understanding. EMNLP Workshop.
-jeremyjhotdog. tiny-sota: continuously verified lowest-parameter SST-2 model ≥ 90% accuracy.
+Jaeger, J. tiny-sota: continuously verified lowest-parameter SST-2 model ≥ 90% accuracy. https://github.com/jeremy-jaeger/tiny-sota
 ```
 
 ## License
 
-Copyright (c) 2026 jeremyjhotdog. MIT. See [LICENSE](LICENSE).
+Copyright (c) 2026 Jeremy Jaeger. MIT. See [LICENSE](LICENSE).

@@ -6,7 +6,8 @@ This repository maintains a **public, continuously verified claim**:
 > 90% accuracy on GLUE SST-2.
 
 Candidate models that beat the current champion are welcome under the ranking
-rule below. Authorship of this repository stays with jeremyjhotdog. Keep
+rule below. Authorship of this repository stays with Jeremy Jaeger
+([github.com/jeremy-jaeger](https://github.com/jeremy-jaeger)). Keep
 training, evaluation, and reporting strictly separated.
 
 ## Ranking rule
@@ -95,6 +96,7 @@ is explicitly updated.
 
 ## License
 
-tiny-sota is authored solely by **jeremyjhotdog**. Candidate-model submissions
-are welcome under the ranking rule above; they do not change authorship.
-Copyright (c) 2026 jeremyjhotdog. MIT. See [LICENSE](LICENSE).
+tiny-sota is authored solely by **Jeremy Jaeger**
+([github.com/jeremy-jaeger](https://github.com/jeremy-jaeger)). Candidate-model
+submissions are welcome under the ranking rule above; they do not change
+authorship. Copyright (c) 2026 Jeremy Jaeger. MIT. See [LICENSE](LICENSE).

@@ -9,7 +9,7 @@ description = "Lowest-parameter model that exceeds 90% accuracy on GLUE SST-2, w
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
-authors = [{ name = "jeremyjhotdog", email = "jeremyjhotdog@gmail.com" }]
+authors = [{ name = "Jeremy Jaeger" }]
 keywords = ["nlp", "sst-2", "glue", "tiny-models", "reproducibility"]
 classifiers = [
   "Programming Language :: Python :: 3",
@@ -65,7 +65,7 @@ tiny-sota-quantize = "quantize:app"
 tiny-sota-evaluate = "evaluate:app"
 
 [project.urls]
-Homepage = "https://github.com/jeremyjhotdog/tiny-sota"
+Homepage = "https://github.com/jeremy-jaeger/tiny-sota"
 Documentation = "README.md"
 
 [tool.setuptools]
