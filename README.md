@@ -56,6 +56,14 @@ Verify the current committed champion without retraining:
 python src/evaluate.py --model-dir models/champion --seed 42
 ```
 
+Try the champion on real sentences (after `fetch_champion.py` so weights are on disk):
+
+```bash
+python src/predict.py --demo
+python src/predict.py -t "a stirring, funny and finally transporting re-imagining of beauty and the beast"
+python src/predict.py -t "this movie was a complete waste of time" -t "I loved every minute of it"
+```
+
 Other training paths:
 
 ```bash

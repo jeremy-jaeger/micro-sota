@@ -183,8 +183,17 @@ class SklearnPredictor(Predictor):
         self.name = spec.get("model_name") or model_dir.name
         self._n_params = int(spec.get("parameter_count") or count_linear_parameters(self.pipeline))
 
-    def predict(self, texts: Sequence[str]) -> np.ndarray:
-        return np.asarray(self.pipeline.predict(list(texts)), dtype=np.int64)
+    def predict_logits(self, texts: Sequence[str]) -> np.ndarray:
+        batch = list(texts)
+        if hasattr(self.pipeline, "decision_function"):
+            scores = np.asarray(self.pipeline.decision_function(batch), dtype=np.float64)
+            if scores.ndim == 1:
+                return np.stack([-scores, scores], axis=1)
+            return scores
+        if hasattr(self.pipeline, "predict_proba"):
+            proba = np.clip(np.asarray(self.pipeline.predict_proba(batch), dtype=np.float64), 1e-12, 1.0)
+            return np.log(proba)
+        raise RuntimeError("sklearn pipeline has neither decision_function nor predict_proba")
 
     def parameter_count(self) -> int:
         return self._n_params
