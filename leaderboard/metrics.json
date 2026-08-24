@@ -1,0 +1,98 @@
+{
+  "task": "sst2",
+  "threshold": 0.9,
+  "claim": "The lowest-parameter (and lowest on-disk footprint) model that still exceeds 90% accuracy on the SST-2 binary sentiment classification task from the GLUE benchmark.",
+  "updated_at": "2026-08-24T09:01:21Z",
+  "champion": {
+    "task": "sst2",
+    "split": "validation",
+    "accuracy": 0.9071100917431193,
+    "f1": 0.9106945975744212,
+    "precision": 0.8920086393088553,
+    "recall": 0.9301801801801802,
+    "matthews_correlation": 0.8147846326800853,
+    "n_examples": 872,
+    "n_correct": 791,
+    "parameter_count": 11171074,
+    "parameter_count_millions": 11.171074,
+    "disk_size_bytes": 23064436,
+    "disk_size_mb": 21.996,
+    "latency_ms_per_example": 1.9465,
+    "device": "cpu",
+    "seed": 42,
+    "model_name": "bert-mini-sst2-distilled",
+    "model_format": "transformers",
+    "model_dir": "models/champion",
+    "meets_threshold": true,
+    "threshold": 0.9,
+    "verified_at": "2026-08-24T09:01:20Z",
+    "batch_size": 32,
+    "primary_metric": "accuracy",
+    "display_name": "GLUE SST-2"
+  },
+  "comparisons": [
+    {
+      "model_name": "bert-mini-sst2-distilled",
+      "parameter_count": 11171074,
+      "disk_size_mb": 21.996,
+      "accuracy": 0.9071100917431193,
+      "f1": 0.9106945975744212,
+      "verified_at": "2026-08-24T09:01:20Z",
+      "model_dir": "models/champion"
+    },
+    {
+      "model_name": "tfidf-lr-word-char",
+      "parameter_count": 180001,
+      "disk_size_mb": 1.1056,
+      "accuracy": 0.8325688073394495,
+      "f1": 0.841991341991342,
+      "verified_at": "2026-08-24T08:55:31Z",
+      "model_dir": "models/runs/linear"
+    },
+    {
+      "model_name": "nbsvm-word-char",
+      "parameter_count": 300001,
+      "disk_size_mb": 1.6987,
+      "accuracy": 0.841743119266055,
+      "f1": 0.85,
+      "verified_at": "2026-08-24T08:55:27Z",
+      "model_dir": "models/runs/nbsvm"
+    },
+    {
+      "model_name": "tiny-bert-sst2-distilled",
+      "parameter_count": 4386178,
+      "disk_size_mb": 17.4166,
+      "accuracy": 0.8337155963302753,
+      "f1": 0.8354143019296254,
+      "verified_at": "2026-08-24T08:56:30Z",
+      "model_dir": "models/runs/tiny-bert-distilled"
+    },
+    {
+      "model_name": "bert-mini-sst2-distilled",
+      "parameter_count": 11171074,
+      "disk_size_mb": 43.3022,
+      "accuracy": 0.9071100917431193,
+      "f1": 0.9106945975744212,
+      "verified_at": "2026-08-24T08:57:34Z",
+      "model_dir": "models/runs/bert-mini-sst2-distilled"
+    },
+    {
+      "model_name": "MiniLM-L6-H384-uncased-sst2",
+      "parameter_count": 22713986,
+      "disk_size_mb": 87.3389,
+      "accuracy": 0.9013761467889908,
+      "f1": 0.903370786516854,
+      "verified_at": "2026-08-24T08:57:46Z",
+      "model_dir": "models/runs/MiniLM-L6-H384-uncased-sst2"
+    },
+    {
+      "model_name": "distilbert-base-uncased-finetuned-sst-2-english",
+      "parameter_count": 66955010,
+      "disk_size_mb": 256.105,
+      "accuracy": 0.9105504587155964,
+      "f1": 0.9137168141592921,
+      "verified_at": "2026-08-24T08:57:57Z",
+      "model_dir": "models/runs/distilbert-base-uncased-finetuned-sst-2-english"
+    }
+  ]
+}

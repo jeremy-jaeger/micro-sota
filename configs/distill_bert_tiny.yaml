@@ -1,0 +1,18 @@
+task: sst2
+seed: 42
+teacher:
+  pretrained: distilbert-base-uncased-finetuned-sst-2-english
+student:
+  type: hf
+  name: distilled-bert-tiny
+  pretrained: prajjwal1/bert-tiny
+  max_length: 128
+temperature: 2.0
+alpha: 0.6
+train:
+  epochs: 3
+  batch_size: 16
+  lr: 5.0e-5
+  weight_decay: 0.01
+  internal_val_ratio: 0.05
+  max_length: 128

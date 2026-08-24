@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+
+# Training artifacts (keep champion weights)
+models/runs/
+models/candidates/*
+!models/candidates/.gitkeep
+*.pt
+*.bin
+optimizer.pt
+scheduler.pt
+rng_state.pth
+trainer_state.json
+training_args.bin
+
+# Caches
+.cache/
+hf_cache/
+.huggingface/
+*.onnx.tmp
+onnx_tmp/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Plots generated locally (committed plots live under leaderboard/)
+/tmp_plots/

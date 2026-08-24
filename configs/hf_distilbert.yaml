@@ -1,0 +1,17 @@
+task: sst2
+seed: 42
+type: hf
+model:
+  type: hf
+  name: distilbert-sst2
+  pretrained: distilbert-base-uncased
+  max_length: 128
+train:
+  epochs: 3
+  batch_size: 16
+  eval_batch_size: 32
+  lr: 2.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.06
+  internal_val_ratio: 0.05
+  fp16: false

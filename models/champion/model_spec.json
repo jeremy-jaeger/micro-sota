@@ -1,0 +1,21 @@
+{
+  "format": "transformers",
+  "architecture": "bert-mini",
+  "framework": "pytorch",
+  "task": "sst2",
+  "seed": 42,
+  "model_name": "bert-mini-sst2-distilled",
+  "parameter_count": 11171074,
+  "max_length": 128,
+  "labels": {
+    "0": "negative",
+    "1": "positive"
+  },
+  "source": "moshew/bert-mini-sst2-distilled",
+  "trained_at": "2026-08-24T08:57:11Z",
+  "quantization": "fp16",
+  "quantized_at": "2026-08-24T08:59:31Z",
+  "dtype": "float16",
+  "champion": true,
+  "notes": "Independently re-evaluated on GLUE SST-2 validation, seed 42."
+}

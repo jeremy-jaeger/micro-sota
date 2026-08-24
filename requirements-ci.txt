@@ -1,0 +1,4 @@
+# Lean CI extras on top of requirements.txt.
+# bitsandbytes is optional and often CUDA-only; do not require it in CPU CI.
+pytest>=8.0
+ruff>=0.5

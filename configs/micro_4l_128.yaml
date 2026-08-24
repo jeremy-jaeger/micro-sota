@@ -1,0 +1,22 @@
+task: sst2
+seed: 42
+type: micro
+model:
+  type: micro
+  name: micro-4l-128d
+  vocab_size: 8192
+  hidden_size: 128
+  embedding_size: 64
+  num_layers: 4
+  num_heads: 4
+  ffn_size: 256
+  max_length: 128
+  dropout: 0.1
+train:
+  epochs: 6
+  batch_size: 32
+  lr: 2.0e-4
+  weight_decay: 0.01
+  warmup_ratio: 0.06
+  internal_val_ratio: 0.05
+  max_length: 128

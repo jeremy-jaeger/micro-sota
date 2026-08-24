@@ -1,0 +1,28 @@
+task: sst2
+seed: 42
+type: linear
+model:
+  type: linear
+  name: tfidf-lr-word-char
+  variant: tfidf_lr
+  use_word: true
+  use_char: true
+  word_tfidf:
+    ngram_range: [1, 3]
+    min_df: 2
+    max_df: 0.95
+    max_features: 50000
+    sublinear_tf: true
+  char_tfidf:
+    analyzer: char_wb
+    ngram_range: [3, 6]
+    min_df: 2
+    max_df: 0.95
+    max_features: 40000
+    sublinear_tf: true
+  classifier: logreg
+  C: 2.0
+  solver: liblinear
+  max_iter: 2000
+train:
+  internal_val_ratio: 0.05

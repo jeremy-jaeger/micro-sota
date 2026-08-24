@@ -1,0 +1,17 @@
+task: sst2
+seed: 42
+type: hf
+model:
+  type: hf
+  name: bert-mini-sst2
+  pretrained: prajjwal1/bert-mini
+  max_length: 128
+train:
+  epochs: 4
+  batch_size: 32
+  eval_batch_size: 64
+  lr: 3.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.06
+  internal_val_ratio: 0.05
+  fp16: false

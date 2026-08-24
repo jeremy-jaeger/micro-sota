@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>tiny-sota · SST-2 champion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #171e26;
+      --ink: #e8eef4;
+      --muted: #93a1b0;
+      --line: #2a3542;
+      --accent: #2dd4bf;
+      --warn: #fbbf24;
+      --fail: #fb7185;
+      --ok: #34d399;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+    body {
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    main { max-width: 980px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+    header h1 {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.6rem;
+    }
+    .claim {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 1.15rem;
+      color: #d5dee7;
+      max-width: 46rem;
+    }
+    .badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.1rem 0 1.8rem; }
+    .badge {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.2rem 0.7rem;
+      color: var(--muted);
+    }
+    .badge.ok { color: var(--ok); border-color: #14532d; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+    }
+    @media (max-width: 720px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.95rem 1rem;
+    }
+    .stat .k { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+    .stat .v { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 1.25rem; margin-top: 0.35rem; color: var(--accent); }
+    h2 { font-size: 1.05rem; margin: 2rem 0 0.7rem; font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    th, td { text-align: left; padding: 0.55rem 0.4rem; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); font-weight: 500; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    td.num { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+    .wrap {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1rem 1.1rem 1.2rem;
+      overflow-x: auto;
+    }
+    canvas { max-height: 340px; }
+    footer { margin-top: 2.4rem; color: var(--muted); font-size: 0.85rem; }
+    a { color: var(--accent); }
+    .error { color: var(--fail); }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="badges">
+        <span class="badge">GLUE · SST-2</span>
+        <span class="badge">seed 42</span>
+        <span class="badge ok" id="threshold-badge">threshold ≥ 90%</span>
+      </div>
+      <h1>tiny-sota</h1>
+      <p class="claim" id="claim">
+        The lowest-parameter (and lowest on-disk footprint) model that still
+        exceeds 90% accuracy on SST-2.
+      </p>
+    </header>
+
+    <section class="grid" id="stats"></section>
+
+    <h2>Champion and recorded candidates</h2>
+    <div class="wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Parameters</th>
+            <th>Disk</th>
+            <th>Accuracy</th>
+            <th>F1</th>
+            <th>Verified</th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+          <tr><td colspan="6">Loading metrics.json…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Parameter count vs. accuracy</h2>
+    <div class="wrap">
+      <canvas id="pareto"></canvas>
+    </div>
+
+    <footer>
+      Metrics are produced by <code>src/evaluate.py</code> on the official GLUE
+      SST-2 validation split (872 labeled examples). The unlabeled GLUE test
+      set is not used. Source and reproduction:
+      <a href="../README.md">README</a>.
+      <div id="updated"></div>
+    </footer>
+  </main>
+  <script>
+    const fmtPct = (x) => (100 * x).toFixed(2) + "%";
+    const fmtParams = (n) => Number(n).toLocaleString();
+    const fmtMb = (x) => Number(x).toFixed(4) + " MB";
+
+    async function loadMetrics() {
+      const urls = ["../metrics.json", "./metrics.json", "/metrics.json"];
+      for (const url of urls) {
+        try {
+          const res = await fetch(url, { cache: "no-store" });
+          if (res.ok) return await res.json();
+        } catch (err) { /* try next */ }
+      }
+      throw new Error("Could not load metrics.json");
+    }
+
+    function render(data) {
+      const champ = data.champion || data;
+      document.getElementById("claim").textContent = data.claim || document.getElementById("claim").textContent;
+      document.getElementById("updated").textContent = "Updated " + (data.updated_at || champ.verified_at || "");
+      const stats = [
+        ["Accuracy", fmtPct(champ.accuracy)],
+        ["Parameters", fmtParams(champ.parameter_count)],
+        ["Disk size", fmtMb(champ.disk_size_mb)],
+        ["F1", Number(champ.f1).toFixed(4)],
+      ];
+      document.getElementById("stats").innerHTML = stats.map(([k, v]) =>
+        `<article class="stat"><div class="k">${k}</div><div class="v">${v}</div></article>`
+      ).join("");
+
+      const rows = [];
+      const seen = new Set();
+      const add = (row, tag) => {
+        if (!row || row.accuracy == null) return;
+        const key = (row.model_dir || row.model_name) + ":" + row.parameter_count;
+        if (seen.has(key)) return;
+        seen.add(key);
+        rows.push({ ...row, tag });
+      };
+      add(champ, "champion");
+      (data.comparisons || []).forEach((r) => add(r, ""));
+      rows.sort((a, b) => a.parameter_count - b.parameter_count);
+      document.getElementById("rows").innerHTML = rows.map((r) => `
+        <tr>
+          <td>${r.model_name || ""}${r.tag === "champion" ? " · champion" : ""}</td>
+          <td class="num">${fmtParams(r.parameter_count)}</td>
+          <td class="num">${r.disk_size_mb != null ? fmtMb(r.disk_size_mb) : "—"}</td>
+          <td class="num">${fmtPct(r.accuracy)}</td>
+          <td class="num">${r.f1 != null ? Number(r.f1).toFixed(4) : "—"}</td>
+          <td>${(r.verified_at || "").replace("T", " ").replace("Z", " UTC")}</td>
+        </tr>
+      `).join("");
+
+      const ctx = document.getElementById("pareto");
+      const xs = rows.map((r) => r.parameter_count);
+      const ys = rows.map((r) => 100 * r.accuracy);
+      new Chart(ctx, {
+        type: "scatter",
+        data: {
+          datasets: [
+            {
+              label: "evaluated models",
+              data: rows.map((r) => ({ x: r.parameter_count, y: 100 * r.accuracy, name: r.model_name })),
+              backgroundColor: "#2dd4bf",
+            },
+          ],
+        },
+        options: {
+          plugins: {
+            legend: { labels: { color: "#93a1b0" } },
+            tooltip: {
+              callbacks: {
+                label: (c) => `${c.raw.name}: ${c.raw.x} params, ${c.raw.y.toFixed(2)}%`,
+              },
+            },
+          },
+          scales: {
+            x: {
+              type: "logarithmic",
+              title: { display: true, text: "parameters", color: "#93a1b0" },
+              ticks: { color: "#93a1b0" },
+              grid: { color: "#2a3542" },
+            },
+            y: {
+              min: 70,
+              max: 100,
+              title: { display: true, text: "SST-2 accuracy (%)", color: "#93a1b0" },
+              ticks: { color: "#93a1b0" },
+              grid: { color: "#2a3542" },
+            },
+          },
+        },
+      });
+    }
+
+    loadMetrics().then(render).catch((err) => {
+      document.getElementById("rows").innerHTML =
+        `<tr><td colspan="6" class="error">${err.message}</td></tr>`;
+    });
+  </script>
+</body>
+</html>
