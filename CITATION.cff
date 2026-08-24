@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+title: tiny-sota
+message: If you use this software, please cite it as below.
+type: software
+authors:
+  - name: jeremyjhotdog
+    email: jeremyjhotdog@gmail.com
+license: MIT
+abstract: >
+  The lowest-parameter (and lowest on-disk footprint) model that still
+  exceeds 90% accuracy on GLUE SST-2, with continuous verification.
+keywords:
+  - nlp
+  - sst-2
+  - glue
+  - tiny-models
+  - reproducibility

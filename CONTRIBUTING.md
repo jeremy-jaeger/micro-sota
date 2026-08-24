@@ -5,8 +5,9 @@ This repository maintains a **public, continuously verified claim**:
 > The lowest-parameter (and lowest on-disk footprint) model that still exceeds
 > 90% accuracy on GLUE SST-2.
 
-We welcome candidates that beat the current champion on the ranking rule below.
-Please keep training, evaluation, and reporting strictly separated.
+Candidate models that beat the current champion are welcome under the ranking
+rule below. Authorship of this repository stays with jeremyjhotdog. Keep
+training, evaluation, and reporting strictly separated.
 
 ## Ranking rule
 
@@ -94,4 +95,6 @@ is explicitly updated.
 
 ## License
 
-By contributing you agree that your work is released under the MIT License.
+tiny-sota is authored solely by **jeremyjhotdog**. Candidate-model submissions
+are welcome under the ranking rule above; they do not change authorship.
+Copyright (c) 2026 jeremyjhotdog. MIT. See [LICENSE](LICENSE).
