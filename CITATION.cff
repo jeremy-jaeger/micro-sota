@@ -6,6 +6,7 @@ authors:
   - name: Jeremy Jaeger
     alias: jeremy-jaeger
     website: https://github.com/jeremy-jaeger
+url: https://github.com/jeremy-jaeger/micro-sota
 license: MIT
 abstract: >
   The lowest-parameter (and lowest on-disk footprint) model that still
