@@ -142,7 +142,7 @@ Socher, R., et al. (2013). Recursive Deep Models for Semantic Compositionality
 Over a Sentiment Treebank. EMNLP.
 Wang, A., et al. (2018). GLUE: A Multi-Task Benchmark and Analysis Platform
 for Natural Language Understanding. EMNLP Workshop.
-Jaeger, J. tiny-sota: continuously verified lowest-parameter SST-2 model ≥ 90% accuracy. https://github.com/jeremy-jaeger/tiny-sota
+Jaeger, J. tiny-sota: continuously verified lowest-parameter SST-2 model ≥ 90% accuracy. https://github.com/jeremy-jaeger/micro-sota
 ```
 
 ## License

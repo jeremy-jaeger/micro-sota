@@ -65,7 +65,7 @@ tiny-sota-quantize = "quantize:app"
 tiny-sota-evaluate = "evaluate:app"
 
 [project.urls]
-Homepage = "https://github.com/jeremy-jaeger/tiny-sota"
+Homepage = "https://github.com/jeremy-jaeger/micro-sota"
 Documentation = "README.md"
 
 [tool.setuptools]
