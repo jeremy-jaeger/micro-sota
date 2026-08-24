@@ -63,6 +63,7 @@ micro-sota-train = "train:app"
 micro-sota-distill = "distill:app"
 micro-sota-quantize = "quantize:app"
 micro-sota-evaluate = "evaluate:app"
+micro-sota-predict = "predict:app"
 
 [project.urls]
 Homepage = "https://github.com/jeremy-jaeger/micro-sota"
@@ -75,6 +76,7 @@ py-modules = [
   "distill",
   "quantize",
   "evaluate",
+  "predict",
   "model_utils",
   "micro_model",
   "linear_model",
