@@ -6,7 +6,6 @@ import json
 import logging
 import sys
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import typer
@@ -122,7 +121,7 @@ def print_records(records: list[dict[str, object]], model_name: str) -> None:
 
 @app.command()
 def main(
-    texts: Optional[list[str]] = typer.Option(
+    texts: list[str] | None = typer.Option(
         None,
         "--text",
         "-t",
@@ -141,7 +140,7 @@ def main(
         "--demo",
         help="Run a handful of built-in movie-review sentences.",
     ),
-    output_json: Optional[Path] = typer.Option(
+    output_json: Path | None = typer.Option(
         None, "--output-json", "-o", help="Write predictions as JSON."
     ),
     verbose: bool = typer.Option(False, "--verbose", "-v"),
