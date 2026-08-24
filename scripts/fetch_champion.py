@@ -54,7 +54,7 @@ def main() -> None:
     )
     write_model_card(
         output_dir,
-        title="tiny-sota champion · BERT-Mini SST-2 (distilled)",
+        title="micro-sota champion · BERT-Mini SST-2 (distilled)",
         metrics={"parameter_count": n_params, "source": args.source, "dtype": args.dtype},
         extra_markdown=(
             f"Public checkpoint `{args.source}` (BERT-Mini: 4 layers, hidden 256), "

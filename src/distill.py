@@ -36,7 +36,7 @@ app = typer.Typer(
     no_args_is_help=True,
     help="Distill a teacher classifier into a micro-Transformer or HF student.",
 )
-LOGGER = logging.getLogger("tiny_sota.distill")
+LOGGER = logging.getLogger("micro_sota.distill")
 
 
 def _setup_logging(verbose: bool) -> None:
@@ -211,7 +211,7 @@ def main(
         write_model_spec(output_dir, {"format": "transformers", "architecture": student_cfg.get("pretrained"), **extra})
     write_model_card(
         output_dir,
-        title=f"tiny-sota distilled student ({task_name})",
+        title=f"micro-sota distilled student ({task_name})",
         metrics={"internal_holdout_accuracy": best_acc, "parameters": count_parameters_torch(student)},
         extra_markdown=(
             f"Task-level distillation from `{teacher_name}`.\n\n"

@@ -1,4 +1,4 @@
-"""Independent, seed-controlled evaluation harness for tiny-sota candidates.
+"""Independent, seed-controlled evaluation harness for micro-sota candidates.
 
 This module does not import training code paths other than model loaders. CI
 verifies any submitted weight directory by pointing ``--model-dir`` at it.
@@ -40,7 +40,7 @@ app = typer.Typer(
     no_args_is_help=True,
     help="Evaluate a candidate on a GLUE split and enforce the accuracy threshold.",
 )
-LOGGER = logging.getLogger("tiny_sota.evaluate")
+LOGGER = logging.getLogger("micro_sota.evaluate")
 console = Console()
 
 

@@ -1,6 +1,6 @@
-# tiny-sota champion · BERT-Mini SST-2 (distilled, float16)
+# micro-sota champion · BERT-Mini SST-2 (distilled, float16)
 
-This artifact is part of **tiny-sota**: the lowest-parameter model that
+This artifact is part of **micro-sota**: the lowest-parameter model that
 still exceeds 90% accuracy on GLUE SST-2, continuously verified in CI.
 
 ## Reported metrics

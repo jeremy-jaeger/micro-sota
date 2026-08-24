@@ -1,4 +1,4 @@
-# Runtime dependencies for tiny-sota (Python 3.10+).
+# Runtime dependencies for micro-sota (Python 3.10+).
 # Install: pip install -r requirements.txt
 # GPU users should install a CUDA build of torch first, then this file.
 

@@ -114,7 +114,7 @@ def main() -> None:
     ax.set_ylim(0.5, 1.0)
     ax.grid(True, which="both", linestyle=":", alpha=0.5)
     ax.legend(frameon=False, loc="lower right")
-    ax.set_title("tiny-sota · parameter count vs. SST-2 accuracy")
+    ax.set_title("micro-sota · parameter count vs. SST-2 accuracy")
     fig.tight_layout()
     fig.savefig(args.output)
     print(f"Wrote {args.output}")

@@ -1,4 +1,4 @@
-"""INT8 and 4-bit quantization paths for tiny-sota candidates."""
+"""INT8 and 4-bit quantization paths for micro-sota candidates."""
 
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ app = typer.Typer(
     no_args_is_help=True,
     help="Quantize a saved candidate (INT8 dynamic / ONNX INT8 / weight-only INT4 / bitsandbytes 4-bit).",
 )
-LOGGER = logging.getLogger("tiny_sota.quantize")
+LOGGER = logging.getLogger("micro_sota.quantize")
 
 
 def _setup_logging(verbose: bool) -> None:
@@ -147,7 +147,7 @@ def _quantize_sklearn(model_dir: Path, output_dir: Path, spec: dict) -> None:
     )
     write_model_card(
         output_dir,
-        title="tiny-sota quantized linear model",
+        title="micro-sota quantized linear model",
         metrics={"parameter_count": spec.get("parameter_count")},
         extra_markdown="Logistic weights rounded through float16; packed INT8 dump in `weights_int8.npz`.",
     )
@@ -198,7 +198,7 @@ def _quantize_torch_dynamic(model_dir: Path, output_dir: Path, spec: dict, devic
                 shutil.copy2(model_dir / name, output_dir / name)
     write_model_card(
         output_dir,
-        title="tiny-sota INT8 dynamic quantization",
+        title="micro-sota INT8 dynamic quantization",
         metrics={"parameter_count": n_params, "scheme": "int8-dynamic"},
         extra_markdown="PyTorch `quantize_dynamic` on `nn.Linear` (qint8). Parameter count is unchanged.",
     )
@@ -242,7 +242,7 @@ def _quantize_onnx(model_dir: Path, output_dir: Path, spec: dict) -> None:
     )
     write_model_card(
         output_dir,
-        title="tiny-sota ONNX INT8 model",
+        title="micro-sota ONNX INT8 model",
         metrics={"parameter_count": n_params, "scheme": "int8-onnx"},
         extra_markdown="Dynamic INT8 quantization via `onnxruntime.quantization.quantize_dynamic`.",
     )
@@ -362,7 +362,7 @@ def _quantize_int4_weight(model_dir: Path, output_dir: Path, spec: dict, device:
     )
     write_model_card(
         output_dir,
-        title="tiny-sota weight-only INT4",
+        title="micro-sota weight-only INT4",
         metrics={"parameter_count": n_params, "scheme": "int4-weight"},
         extra_markdown=(
             "Per-output-row absmax INT4 packing stored in `weights_int4.npz`. "
@@ -408,7 +408,7 @@ def _quantize_bnb(model_dir: Path, output_dir: Path, spec: dict) -> None:
     )
     write_model_card(
         output_dir,
-        title="tiny-sota bitsandbytes NF4",
+        title="micro-sota bitsandbytes NF4",
         metrics={"scheme": "int4-bnb"},
         extra_markdown="Hugging Face `BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type='nf4')`.",
     )
@@ -457,7 +457,7 @@ def _quantize_fp16(model_dir: Path, output_dir: Path, spec: dict) -> None:
         raise typer.BadParameter(f"fp16 is not supported for format {fmt!r}")
     write_model_card(
         output_dir,
-        title="tiny-sota float16 weights",
+        title="micro-sota float16 weights",
         metrics={"parameter_count": spec.get("parameter_count"), "scheme": "fp16"},
         extra_markdown="All parameters stored as IEEE float16. Parameter *count* is unchanged.",
     )

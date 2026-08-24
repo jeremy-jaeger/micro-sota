@@ -1,4 +1,4 @@
-# Configs for tiny-sota training, distillation, and additional GLUE tasks.
+# Configs for micro-sota training, distillation, and additional GLUE tasks.
 #
 # SST-2 (the public claim)
 #   linear_ngram.yaml      TF-IDF word+char LogisticRegression

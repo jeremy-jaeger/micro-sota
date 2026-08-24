@@ -37,9 +37,9 @@ from model_utils import (  # noqa: E402
 app = typer.Typer(
     add_completion=False,
     no_args_is_help=True,
-    help="Train a tiny-sota candidate on a GLUE binary classification task.",
+    help="Train a micro-sota candidate on a GLUE binary classification task.",
 )
-LOGGER = logging.getLogger("tiny_sota.train")
+LOGGER = logging.getLogger("micro_sota.train")
 
 
 def _setup_logging(verbose: bool) -> None:
@@ -197,7 +197,7 @@ def _train_linear(
     dump_json(output_dir / "holdout_metrics.json", holdout)
     write_model_card(
         output_dir,
-        title=f"tiny-sota linear candidate ({task_name})",
+        title=f"micro-sota linear candidate ({task_name})",
         metrics=holdout,
         extra_markdown=(
             "Linear TF-IDF (word + character n-grams) classifier, optionally with "
@@ -363,7 +363,7 @@ def _train_micro(
     )
     write_model_card(
         output_dir,
-        title=f"tiny-sota micro-Transformer ({task_name})",
+        title=f"micro-sota micro-Transformer ({task_name})",
         metrics={"internal_holdout_accuracy": best_acc, "parameters": count_parameters_torch(model)},
         extra_markdown=(
             "Trained from scratch on the task train split with a WordPiece tokenizer "
@@ -481,7 +481,7 @@ def _train_hf(
     )
     write_model_card(
         output_dir,
-        title=f"tiny-sota HF fine-tune: {pretrained}",
+        title=f"micro-sota HF fine-tune: {pretrained}",
         metrics={k: float(v) for k, v in metrics.items() if isinstance(v, (int, float))},
         extra_markdown=(
             f"Fine-tuned `{pretrained}` on the {task_name} training split with Hugging Face "

@@ -3,7 +3,7 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tiny-sota"
+name = "micro-sota"
 version = "0.1.0"
 description = "Lowest-parameter model that exceeds 90% accuracy on GLUE SST-2, with continuous verification."
 readme = "README.md"
@@ -55,14 +55,14 @@ dev = [
   "ruff>=0.5",
 ]
 all = [
-  "tiny-sota[quant,plot,dev]",
+  "micro-sota[quant,plot,dev]",
 ]
 
 [project.scripts]
-tiny-sota-train = "train:app"
-tiny-sota-distill = "distill:app"
-tiny-sota-quantize = "quantize:app"
-tiny-sota-evaluate = "evaluate:app"
+micro-sota-train = "train:app"
+micro-sota-distill = "distill:app"
+micro-sota-quantize = "quantize:app"
+micro-sota-evaluate = "evaluate:app"
 
 [project.urls]
 Homepage = "https://github.com/jeremy-jaeger/micro-sota"
@@ -94,7 +94,7 @@ testpaths = ["tests"]
 pythonpath = ["src"]
 addopts = "-q"
 
-[tool.tiny-sota]
+[tool.micro-sota]
 seed = 42
 accuracy_threshold = 0.90
 task = "sst2"

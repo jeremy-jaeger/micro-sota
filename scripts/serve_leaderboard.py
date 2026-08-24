@@ -20,7 +20,7 @@ def main() -> None:
     handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(ROOT))
     socketserver.TCPServer.allow_reuse_address = True
     with socketserver.TCPServer((args.host, args.port), handler) as httpd:
-        print(f"Serving tiny-sota leaderboard on http://{args.host}:{args.port}/leaderboard/")
+        print(f"Serving micro-sota leaderboard on http://{args.host}:{args.port}/leaderboard/")
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:

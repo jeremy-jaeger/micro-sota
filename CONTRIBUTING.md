@@ -1,4 +1,4 @@
-# Contributing to tiny-sota
+# Contributing to micro-sota
 
 This repository maintains a **public, continuously verified claim**:
 
@@ -96,7 +96,7 @@ is explicitly updated.
 
 ## License
 
-tiny-sota is authored solely by **Jeremy Jaeger**
+micro-sota is authored solely by **Jeremy Jaeger**
 ([github.com/jeremy-jaeger](https://github.com/jeremy-jaeger)). Candidate-model
 submissions are welcome under the ranking rule above; they do not change
 authorship. Copyright (c) 2026 Jeremy Jaeger. MIT. See [LICENSE](LICENSE).

@@ -1,4 +1,4 @@
-# tiny-sota
+# micro-sota
 
 The lowest-parameter (and lowest on-disk footprint) model that still exceeds **90% accuracy** on the SST-2 binary sentiment classification task from the GLUE benchmark.
 
@@ -47,7 +47,7 @@ python src/evaluate.py \
   --task sst2 \
   --split validation \
   --seed 42 \
-  --output-json /tmp/tiny-sota-eval.json
+  --output-json /tmp/micro-sota-eval.json
 ```
 
 Verify the current committed champion without retraining:
@@ -76,7 +76,7 @@ python src/quantize.py --model-dir models/runs/micro --output-dir models/runs/mi
 Refresh the public numbers after an evaluation:
 
 ```bash
-python scripts/update_leaderboard.py --from-eval /tmp/tiny-sota-eval.json --promote
+python scripts/update_leaderboard.py --from-eval /tmp/micro-sota-eval.json --promote
 python scripts/plot_pareto.py
 python scripts/serve_leaderboard.py --port 43147
 ```
@@ -113,7 +113,7 @@ BERT-Mini is the smallest model in the sweep that clears the bar. Beating it req
 ## Repository map
 
 ```
-tiny-sota/
+micro-sota/
 ├── src/train.py          # linear | micro | HF fine-tune
 ├── src/distill.py        # teacher → student logits
 ├── src/quantize.py       # int8-dynamic | int8-onnx | int4-weight | int4-bnb
@@ -142,7 +142,7 @@ Socher, R., et al. (2013). Recursive Deep Models for Semantic Compositionality
 Over a Sentiment Treebank. EMNLP.
 Wang, A., et al. (2018). GLUE: A Multi-Task Benchmark and Analysis Platform
 for Natural Language Understanding. EMNLP Workshop.
-Jaeger, J. tiny-sota: continuously verified lowest-parameter SST-2 model ≥ 90% accuracy. https://github.com/jeremy-jaeger/micro-sota
+Jaeger, J. micro-sota: continuously verified lowest-parameter SST-2 model ≥ 90% accuracy. https://github.com/jeremy-jaeger/micro-sota
 ```
 
 ## License

@@ -1,4 +1,4 @@
-"""Shared utilities for tiny-sota: seeds, paths, dataset loading, metrics I/O."""
+"""Shared utilities for micro-sota: seeds, paths, dataset loading, metrics I/O."""
 
 from __future__ import annotations
 
@@ -355,7 +355,7 @@ def write_model_card(
     lines = [
         f"# {title}",
         "",
-        "This artifact is part of **tiny-sota**: the lowest-parameter model that",
+        "This artifact is part of **micro-sota**: the lowest-parameter model that",
         "still exceeds 90% accuracy on GLUE SST-2, continuously verified in CI.",
         "",
         "## Reported metrics",
