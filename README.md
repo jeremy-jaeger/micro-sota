@@ -10,7 +10,7 @@ The lowest-parameter (and lowest on-disk footprint) model that still exceeds **9
 [![license](https://img.shields.io/badge/license-MIT-informational)](LICENSE)
 [![author](https://img.shields.io/badge/author-jeremy--jaeger-0f172a)](https://github.com/jeremy-jaeger)
 
-**Author:** [Jeremy Jaeger](https://github.com/jeremy-jaeger) (sole author).
+**Author:** [Jeremy Jaeger](https://github.com/jeremy-jaeger) .
 
 This repository **establishes** that claim with trainable candidates, and **continuously verifies** it: a seed-controlled evaluation harness loads the champion weights, runs the official GLUE SST-2 validation split, and fails CI if accuracy falls below 90%.
 
