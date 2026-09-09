@@ -1,0 +1,198 @@
+# Continuous verification for the micro-sota SST-2 claim.
+# Fails the build when accuracy on the official GLUE SST-2 validation split
+# (seed 42) is below 90%. See README.md and CONTRIBUTING.md.
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      model_dir:
+        description: Directory to evaluate (weights + model_spec.json)
+        required: false
+        default: models/champion
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUNBUFFERED: "1"
+  # CPU-only default job: do not pull CUDA/bitsandbytes wheels.
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Pre-existing ruff findings on main must not block the 90% SST-2 gate.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+
+      - name: Install lint extras
+        run: python -m pip install -r requirements-ci.txt
+
+      - name: Ruff
+        run: ruff check src tests scripts
+
+  verify:
+    name: verify (cpu)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-ci.txt
+
+      - name: Cache Hugging Face downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: ${{ runner.os }}-hf-sst2-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-hf-sst2-
+
+      - name: Install CPU dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements.txt -r requirements-ci.txt
+
+      - name: Unit tests
+        run: python -m pytest tests -q
+
+      - name: Resolve model directory
+        run: |
+          MODEL_DIR="${{ github.event.inputs.model_dir || 'models/champion' }}"
+          echo "MODEL_DIR=${MODEL_DIR}" >> "$GITHUB_ENV"
+          echo "Evaluating ${MODEL_DIR}"
+
+      - name: Fetch champion weights if missing
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import os
+          import subprocess
+          import sys
+
+          model_dir = Path(os.environ["MODEL_DIR"])
+          suffixes = {".safetensors", ".bin", ".pt", ".pth", ".joblib", ".onnx", ".npz"}
+          weights = []
+          if model_dir.is_dir():
+              weights = [
+                  p
+                  for p in model_dir.iterdir()
+                  if p.is_file() and p.suffix in suffixes and p.stat().st_size > 1024
+              ]
+          if weights:
+              print("Found inference weights:", ", ".join(p.name for p in weights))
+              raise SystemExit(0)
+
+          champion = (Path.cwd() / "models" / "champion").resolve()
+          resolved = model_dir.resolve() if model_dir.is_absolute() else (Path.cwd() / model_dir).resolve()
+          if resolved != champion:
+              print(f"No inference weights in {model_dir}; refusing to fetch (not models/champion).")
+              raise SystemExit(1)
+
+          print("Champion weights missing or incomplete; running scripts/fetch_champion.py --dtype fp16")
+          raise SystemExit(subprocess.call([sys.executable, "scripts/fetch_champion.py", "--dtype", "fp16"]))
+          PY
+
+      - name: Evaluate SST-2 validation (fail if accuracy < 90%)
+        run: |
+          python src/evaluate.py \
+            --model-dir "${MODEL_DIR}" \
+            --task sst2 \
+            --split validation \
+            --seed 42 \
+            --device cpu \
+            --output-json /tmp/micro-sota-eval.json
+
+  verify-cuda:
+    name: verify (cuda)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Detect NVIDIA GPU
+        id: gpu
+        run: |
+          if command -v nvidia-smi >/dev/null 2>&1 && nvidia-smi -L; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No NVIDIA GPU on this runner; skipping CUDA verification."
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.gpu.outputs.present == 'true'
+
+      - uses: actions/setup-python@v5
+        if: steps.gpu.outputs.present == 'true'
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-ci.txt
+
+      - name: Install CUDA-capable PyTorch and requirements
+        if: steps.gpu.outputs.present == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r requirements-ci.txt
+
+      - name: Fetch champion weights if missing
+        if: steps.gpu.outputs.present == 'true'
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          import sys
+
+          model_dir = Path("models/champion")
+          suffixes = {".safetensors", ".bin", ".pt", ".pth", ".joblib", ".onnx", ".npz"}
+          weights = []
+          if model_dir.is_dir():
+              weights = [
+                  p
+                  for p in model_dir.iterdir()
+                  if p.is_file() and p.suffix in suffixes and p.stat().st_size > 1024
+              ]
+          if weights:
+              print("Found inference weights:", ", ".join(p.name for p in weights))
+              raise SystemExit(0)
+          print("Champion weights missing or incomplete; running scripts/fetch_champion.py --dtype fp16")
+          raise SystemExit(subprocess.call([sys.executable, "scripts/fetch_champion.py", "--dtype", "fp16"]))
+          PY
+
+      - name: Evaluate SST-2 validation on CUDA
+        if: steps.gpu.outputs.present == 'true'
+        run: |
+          python src/evaluate.py \
+            --model-dir models/champion \
+            --task sst2 \
+            --split validation \
+            --seed 42 \
+            --device cuda \
+            --output-json /tmp/micro-sota-eval-cuda.json
