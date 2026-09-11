@@ -387,13 +387,23 @@ def write_model_card(
 
 
 class Predictor:
-    """Minimal inference protocol used by ``evaluate.py``."""
+    """Minimal inference protocol used by ``evaluate.py`` and ``predict.py``."""
 
     format: str = "unknown"
     name: str = "unknown"
 
     def predict(self, texts: Sequence[str]) -> np.ndarray:
+        logits = self.predict_logits(texts)
+        return np.argmax(np.asarray(logits), axis=-1).astype(np.int64)
+
+    def predict_logits(self, texts: Sequence[str]) -> np.ndarray:
         raise NotImplementedError
+
+    def predict_proba(self, texts: Sequence[str]) -> np.ndarray:
+        logits = np.asarray(self.predict_logits(texts), dtype=np.float64)
+        shifted = logits - logits.max(axis=-1, keepdims=True)
+        exp = np.exp(shifted)
+        return exp / exp.sum(axis=-1, keepdims=True)
 
     def parameter_count(self) -> int:
         raise NotImplementedError
@@ -441,7 +451,7 @@ class _TransformersPredictor(Predictor):
         self.model.eval()
         self._spec = spec
 
-    def predict(self, texts: Sequence[str]) -> np.ndarray:
+    def predict_logits(self, texts: Sequence[str]) -> np.ndarray:
         import torch
 
         encoded = self.tokenizer(
@@ -454,7 +464,7 @@ class _TransformersPredictor(Predictor):
         encoded = {k: v.to(self.device) for k, v in encoded.items()}
         with torch.no_grad():
             logits = self.model(**encoded).logits
-            return logits.argmax(dim=-1).detach().cpu().numpy()
+            return logits.detach().cpu().numpy()
 
     def parameter_count(self) -> int:
         return count_parameters_torch(self.model)
@@ -489,7 +499,7 @@ class _OnnxPredictor(Predictor):
         self._n_params = int(spec.get("parameter_count") or 0)
         self._spec = spec
 
-    def predict(self, texts: Sequence[str]) -> np.ndarray:
+    def predict_logits(self, texts: Sequence[str]) -> np.ndarray:
         encoded = self.tokenizer(
             list(texts),
             padding=True,
@@ -504,8 +514,7 @@ class _OnnxPredictor(Predictor):
             elif name == "token_type_ids":
                 feeds[name] = np.zeros_like(encoded["input_ids"])
         outputs = self.session.run(None, feeds)
-        logits = outputs[0]
-        return np.argmax(logits, axis=-1)
+        return np.asarray(outputs[0])
 
     def parameter_count(self) -> int:
         if self._n_params:
@@ -551,7 +560,7 @@ class _Int4Predictor(Predictor):
         self.max_length = int(spec.get("max_length", config.get("max_length", 128)))
         self.name = spec.get("model_name") or model_dir.name
 
-    def predict(self, texts: Sequence[str]) -> np.ndarray:
+    def predict_logits(self, texts: Sequence[str]) -> np.ndarray:
         import torch
 
         encoded = self.tokenizer(
@@ -564,7 +573,7 @@ class _Int4Predictor(Predictor):
         encoded = {k: v.to(self.device) for k, v in encoded.items() if k in {"input_ids", "attention_mask"}}
         with torch.no_grad():
             logits = self.model(**encoded)
-            return logits.argmax(dim=-1).detach().cpu().numpy()
+            return logits.detach().cpu().numpy()
 
     def parameter_count(self) -> int:
         return count_parameters_torch(self.model)

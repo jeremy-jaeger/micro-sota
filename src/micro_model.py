@@ -251,7 +251,7 @@ class MicroPredictor(Predictor):
         self.max_length = int(spec.get("max_length", self.model.max_length))
         self.name = spec.get("model_name") or model_dir.name
 
-    def predict(self, texts: Sequence[str]) -> np.ndarray:
+    def predict_logits(self, texts: Sequence[str]) -> np.ndarray:
         encoded = self.tokenizer(
             list(texts),
             padding=True,
@@ -265,7 +265,7 @@ class MicroPredictor(Predictor):
             logits = self.model(input_ids=input_ids, attention_mask=attention_mask)
             if isinstance(logits, tuple):
                 logits = logits[-1]
-            return logits.argmax(dim=-1).detach().cpu().numpy()
+            return logits.detach().cpu().numpy()
 
     def parameter_count(self) -> int:
         return count_parameters_torch(self.model)

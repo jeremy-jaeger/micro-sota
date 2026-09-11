@@ -74,6 +74,19 @@ def test_linear_pipeline_fits_toy_data(tmp_path: Path) -> None:
     assert spec["format"] == "sklearn"
     assert (tmp_path / "model.joblib").exists()
 
+    from linear_model import SklearnPredictor
+    from predict import classify_texts
+
+    predictor = SklearnPredictor(tmp_path, spec)
+    logits = predictor.predict_logits(["excellent superb fantastic acting"])
+    assert logits.shape == (1, 2)
+    proba = predictor.predict_proba(["excellent superb fantastic acting"])
+    assert pytest.approx(1.0) == float(proba.sum())
+    records = classify_texts(tmp_path, ["excellent superb fantastic acting", "terrible awful horrible waste"])
+    assert records[0]["label"] == "positive"
+    assert records[1]["label"] == "negative"
+    assert 0.0 <= float(records[0]["confidence"]) <= 1.0
+
 
 def test_int4_pack_roundtrip() -> None:
     rng = np.random.default_rng(0)
